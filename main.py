@@ -17,7 +17,8 @@ def type_file(file_name: str)->None:
 def print_usage()->None:
     """ print the usage of this command
     """
-    print("\tTypeF {Filename}")
+    print("\tTypeF {Filename}\n\
+            \t\t only local paths work")
 
 
 def main():
