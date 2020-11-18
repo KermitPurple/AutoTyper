@@ -1,4 +1,4 @@
-import keyboard, time, sys
+import keyboard, time, sys, os
 
 def countdown(n: int)->None:
     """ print a countdown from n
@@ -23,6 +23,10 @@ def print_usage()->None:
 def main():
     if len(sys.argv) < 2:
         print("Not enough arguments")
+        print_usage()
+        return
+    if not os.path.isfile(sys.argv[1]):
+        print(f"{sys.argv[1]} is not a valid path");
         print_usage()
         return
     countdown(10)
