@@ -8,30 +8,60 @@ def countdown(n: int)->None:
         time.sleep(1) # wait one second
         n -= 1
 
-def type_file(file_name: str)->None:
-    """ open a file and write its contents on the keyboard
+def get_file_contents(file_name: str)->str:
+    """ open a and return its contents as a string
     """
     with open(file_name) as f:
-        keyboard.write(f.read())
+        return f.read()
+
+def get_printable(args: list)->str:
+    """ return what needs to be printed
+    :args[0]: the path of where the script is run
+    :args[1]: [optional] should be '-f' to signal if it is running from a file
+    :args[1 or 2 thru infinity]: the text to be printed or if '-f' is there then read from file
+    :returns: string to print
+    """
+    if len(args) < 2:
+        print("Not enough arguments")
+        print_usage()
+        return ""
+    PATH_TO_DIR = args.pop(0)
+    read_from_file = False
+    if '-f' in args:
+        args.remove('-f')
+        read_from_file = True
+    else:
+        read_from_file = False
+    input_arg = ' '.join(args)
+    if read_from_file:
+        if ':' in input_arg.lower():
+            path = input_arg
+        else:
+            path = PATH_TO_DIR + '\\' + input_arg
+        if not os.path.isfile(path):
+            print(f"{path} is not a valid path");
+            print_usage()
+            return ""
+        return get_file_contents(path)
+    else:
+        return input_arg
 
 def print_usage()->None:
     """ print the usage of this command
     """
-    print("\tTypeF {Filename}\n\t\t only local paths work")
-
+    print(
+            "\tTypeF [flags] {input/filename}" +
+            "\n\t\tonly local paths work" +
+            "\n\t\tflags:"
+            "\n\t\t\t-f  =  input is a file name:"
+            )
 
 def main():
-    if len(sys.argv) < 2:
-        print("Not enough arguments")
-        print_usage()
-        return
-    if not os.path.isfile(sys.argv[1]):
-        print(f"{sys.argv[1]} is not a valid path");
-        print_usage()
-        return
-    countdown(10)
-    print(f"printing {sys.argv[1]}")
-    type_file(sys.argv[1])
+    printable = get_printable(sys.argv[1:])
+    if printable != "":
+        print(f"printing in", end=": ")
+        countdown(5)
+        keyboard.write(printable)
 
 if __name__ == "__main__":
     main()
