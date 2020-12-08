@@ -14,7 +14,7 @@ def get_file_contents(file_name: str)->str:
     with open(file_name) as f:
         return f.read()
 
-def get_printable(args: list)->str:
+def get_printable(args: list)->str or list(str):
     """ return what needs to be printed
     :args[0]: the path of where the script is run
     :args[1]: [optional] should be '-f' to signal if it is running from a file
@@ -27,9 +27,13 @@ def get_printable(args: list)->str:
         return ""
     PATH_TO_DIR = args.pop(0)
     read_from_file = False
+    split = False
     if '-f' in args:
         args.remove('-f')
         read_from_file = True
+    if '-s' in args:
+        args.remove('-s')
+        split = True
     else:
         read_from_file = False
     input_arg = ' '.join(args)
@@ -42,9 +46,12 @@ def get_printable(args: list)->str:
             print(f"{path} is not a valid path");
             print_usage()
             return ""
-        return get_file_contents(path)
+        result = get_file_contents(path)
     else:
-        return input_arg
+        result = input_arg
+    if split:
+        return result.split()
+    return split
 
 def print_usage()->None:
     """ print the usage of this command
@@ -52,16 +59,21 @@ def print_usage()->None:
     print(
             "\tTypeF [flags] {input/filename}" +
             "\n\t\tonly local paths work" +
-            "\n\t\tflags:"
-            "\n\t\t\t-f  =  input is a file name:"
+            "\n\t\tflags:" +
+            "\n\t\t\t-f  =  input is a file name:" +
+            "\n\t\t\t-s  =  print each word as a line"
             )
 
 def main():
     printable = get_printable(sys.argv[1:])
-    if printable != "":
+    if printable != "" and printable != []:
         print(f"printing in", end=": ")
         countdown(5)
-        keyboard.write(printable)
+        if isinstance(printable, list):
+            for i in printable:
+                keyboard.write(i + '\n')
+        else:
+            keyboard.write(printable)
 
 if __name__ == "__main__":
     main()
