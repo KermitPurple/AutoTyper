@@ -34,8 +34,6 @@ def get_printable(args: list)->str or list(str):
     if '-s' in args:
         args.remove('-s')
         split = True
-    else:
-        read_from_file = False
     input_arg = ' '.join(args)
     if read_from_file:
         if ':' in input_arg.lower():
@@ -51,7 +49,7 @@ def get_printable(args: list)->str or list(str):
         result = input_arg
     if split:
         return result.split()
-    return split
+    return result
 
 def print_usage()->None:
     """ print the usage of this command
